@@ -58,3 +58,28 @@ def main():
             command = True
         elif o in ("-u","--upload"):
             upload_destination = a
+        elif o in ("-t","--target"):
+            target = a
+        elif o in ("-p","--port"):
+            port = int(a)
+        else:
+            assert False, "Unhandled Option"
+
+    # 我们是进行监听还是仅从标准输入发送数据？
+
+    if not listen and len(target) and port > 0:
+
+        # 从命令行读取内存数据
+        # 这里将阻塞，所以不在向标准输入发送数据时发送 CTRL-D
+        buffer = sys.stdin.read()
+
+        # 发送数据
+        client_sender(buffer)
+
+    # 我们开始监听并准备上传文件、执行命令
+    # 放置一个反弹 shell
+    # 取决于上面的命令行选项
+    if listen:
+        server_loop()
+
+main()
